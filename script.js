@@ -1,4 +1,4 @@
-const avaliabileCourses = document.getElementById("courses-conatainer");
+const availableCourses = document.getElementById("courses-container");
 const semester1 = document.getElementById("semester1");
 const semester2 = document.getElementById("semester2");
 const semester3 = document.getElementById("semester3");
@@ -11,21 +11,56 @@ const courses = [
     {name: "Operating Systems" , preReqs: "Data Structures", semester: "Fall/Spring", credits: 3, description: "Basic concepts and terminology of operating systems, I/0 and interrupt structures, system structures, processor scheduling, processes and process synchronization, deadlocks, memory management, and other concepts."},
 ]
 
-
-
-
-
 // Display courses 
-function showDetails(course){
-    const courseDetails = document.getElementById("courses-container");
-    courseDetails.innerHTML = `
+function createCourseElement(course) {
+    const courseElement = document.createElement("div");
+    courseElement.classList.add("course");
+    courseElement.setAttribute("draggable", "true");
+    courseElement.innerHTML = `
         <h3>${course.name}</h3>
         <p>Prerequisites: ${course.preReqs}</p>
         <p>Semester: ${course.semester}</p>
         <p>Credits: ${course.credits}</p>
         <p>Description: ${course.description}</p>
     `;
+
+    courseElement.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", JSON.stringify(course));
+    });
+
+    return courseElement;
 }
-showDetails(courses[3]);
 
+// Function to display courses
+function displayCourses() {
+    courses.forEach(course => {
+        const courseElement = createCourseElement(course);
+        availableCourses.appendChild(courseElement);
+    });
+}
 
+// Function to handle drop event
+function handleDrop(e) {
+    e.preventDefault();
+    const courseData = e.dataTransfer.getData("text/plain");
+    const course = JSON.parse(courseData);
+    showDetails(course);
+}
+
+// Function to allow drop
+function allowDrop(e) {
+    e.preventDefault();
+}
+
+// Add event listeners to semesters
+semester1.addEventListener("dragover", allowDrop);
+semester1.addEventListener("drop", handleDrop);
+
+semester2.addEventListener("dragover", allowDrop);
+semester2.addEventListener("drop", handleDrop);
+
+semester3.addEventListener("dragover", allowDrop);
+semester3.addEventListener("drop", handleDrop);
+
+// Initialize the display of courses
+displayCourses();
