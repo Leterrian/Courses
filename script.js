@@ -44,7 +44,8 @@ function handleDrop(e) {
     e.preventDefault();
     const courseData = e.dataTransfer.getData("text/plain");
     const course = JSON.parse(courseData);
-    showDetails(course);
+    const courseElement = createCourseElement(course);
+    e.target.appendChild(courseElement);
 }
 
 // Function to allow drop
